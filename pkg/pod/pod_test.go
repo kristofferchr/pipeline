@@ -112,7 +112,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -162,7 +162,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -208,7 +208,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -255,7 +255,7 @@ func TestPodBuild(t *testing.T) {
 			want: &corev1.PodSpec{
 				ServiceAccountName: "service-account",
 				RestartPolicy:      corev1.RestartPolicyNever,
-				InitContainers:     []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers:     []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -323,7 +323,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -381,7 +381,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "a-very-very-long-character-step-name-to-trigger-max-len----and-invalid-characters"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "a-very-very-long-character-step-name-to-trigger-max-len----and-invalid-characters"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-a-very-very-long-character-step-name-to-trigger-max-len", // step name trimmed.
 					Image:   "image",
@@ -424,7 +424,7 @@ func TestPodBuild(t *testing.T) {
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "ends-with-invalid-%%__$$"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "ends-with-invalid-%%__$$"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-ends-with-invalid", // invalid suffix removed.
 					Image:   "image",
@@ -469,7 +469,7 @@ func TestPodBuild(t *testing.T) {
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 					{
 						Name:         "working-dir-initializer",
 						Image:        images.WorkingDirInitImage,
@@ -527,7 +527,7 @@ func TestPodBuild(t *testing.T) {
 			wantAnnotations: map[string]string{},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-primary-name",
 					Image:   "primary-image",
@@ -583,7 +583,7 @@ func TestPodBuild(t *testing.T) {
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 					{
 						Name:         "place-scripts",
 						Image:        "busybox",
@@ -653,7 +653,7 @@ _EOF_
 			wantAnnotations: map[string]string{}, // no ready annotations on pod create since sidecars are present
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-primary-name",
 					Image:   "primary-image",
@@ -716,7 +716,7 @@ _EOF_
 				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{
 					{Name: "unnamed-0"},
 					{Name: "unnamed-1"},
-				}, false /* setSecurityContext */, false /* windows */)},
+				}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-unnamed-0",
 					Image:   "image",
@@ -815,7 +815,7 @@ _EOF_
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{
 					{Name: "step1"},
-				}, false /* setSecurityContext */, false /* windows */)},
+				}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-step1",
 					Image:   "image",
@@ -885,7 +885,7 @@ _EOF_
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{
 					{Name: "step1"},
-				}, false /* setSecurityContext */, false /* windows */)},
+				}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-step1",
 					Image:   "image",
@@ -956,7 +956,7 @@ _EOF_
 			wantAnnotations: map[string]string{},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "primary-name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-primary-name",
 					Image:   "primary-image",
@@ -1027,7 +1027,7 @@ print("Hello from Python")`,
 						{Name: "one"},
 						{Name: "two"},
 						{Name: "regular-step"},
-					}, false /* setSecurityContext */, false /* windows */),
+					}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 					{
 						Name:    "place-scripts",
 						Image:   images.ShellImage,
@@ -1151,7 +1151,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "one"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "one"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 					{
 						Name:    "place-scripts",
 						Image:   images.ShellImage,
@@ -1215,7 +1215,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "schedule-me"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "schedule-me"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				SchedulerName:  "there-scheduler",
 				Volumes: append(implicitVolumes, binVolume, runVolume(0), downwardVolume, corev1.Volume{
 					Name:         "tekton-creds-init-home-0",
@@ -1267,7 +1267,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "image-pull"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "image-pull"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Volumes: append(implicitVolumes, binVolume, runVolume(0), downwardVolume, corev1.Volume{
 					Name:         "tekton-creds-init-home-0",
 					VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{Medium: corev1.StorageMediumMemory}},
@@ -1318,7 +1318,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "host-aliases"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "host-aliases"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Volumes: append(implicitVolumes, binVolume, runVolume(0), downwardVolume, corev1.Volume{
 					Name:         "tekton-creds-init-home-0",
 					VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{Medium: corev1.StorageMediumMemory}},
@@ -1369,7 +1369,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "use-my-hostNetwork"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "use-my-hostNetwork"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				HostNetwork:    true,
 				Volumes: append(implicitVolumes, binVolume, runVolume(0), downwardVolume, corev1.Volume{
 					Name:         "tekton-creds-init-home-0",
@@ -1414,7 +1414,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1463,7 +1463,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1511,7 +1511,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1561,7 +1561,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1617,7 +1617,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1669,7 +1669,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1720,7 +1720,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1787,7 +1787,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1833,7 +1833,7 @@ _EOF_
 			wantPodName: "task-run-0123456789-01234560d38957287bb0283c59440df14069f59-pod",
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -1894,7 +1894,7 @@ _EOF_
 			},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "use-topologySpreadConstraints"}}, false /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "use-topologySpreadConstraints"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
 					{
 						MaxSkew:           1,
@@ -1955,7 +1955,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2034,7 +2034,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2111,7 +2111,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, true /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2187,7 +2187,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2269,7 +2269,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2349,7 +2349,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, false /* windows */),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, true /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2423,7 +2423,7 @@ _EOF_
 			featureFlags: map[string]string{"set-security-context": "true"},
 			want: &corev1.PodSpec{
 				RestartPolicy:  corev1.RestartPolicyNever,
-				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, false /* windows */)},
+				InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, true /* setSecurityContext */, true /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
 					Image:   "image",
@@ -2468,7 +2468,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false, false),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2526,7 +2526,7 @@ _EOF_
 			want: &corev1.PodSpec{
 				RestartPolicy: corev1.RestartPolicyNever,
 				InitContainers: []corev1.Container{
-					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false, false),
+					entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false, false, false),
 				},
 				Containers: []corev1.Container{{
 					Name:    "step-name",
@@ -2757,7 +2757,7 @@ debug-fail-continue-heredoc-randomly-generated-mz4c7
 		},
 		want: &corev1.PodSpec{
 			RestartPolicy:  corev1.RestartPolicyNever,
-			InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */), placeScriptsContainer},
+			InitContainers: []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */), placeScriptsContainer},
 			Containers: []corev1.Container{{
 				Name:    "step-name",
 				Image:   "image",
@@ -3070,7 +3070,7 @@ func TestPodBuild_TaskLevelResourceRequirements(t *testing.T) {
 }
 
 func TestPodBuildwithSpireEnabled(t *testing.T) {
-	initContainers := []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* windows */)}
+	initContainers := []corev1.Container{entrypointInitContainer(images.EntrypointImage, []v1.Step{{Name: "name"}}, false /* setSecurityContext */, false /* setSecurityContextReadOnlyRootFilesystem */, false /* windows */)}
 	readonly := true
 	for i := range initContainers {
 		c := &initContainers[i]
@@ -3374,12 +3374,13 @@ func TestIsPodReadyImmediately(t *testing.T) {
 
 func TestPrepareInitContainers(t *testing.T) {
 	tcs := []struct {
-		name               string
-		steps              []v1.Step
-		windows            bool
-		setSecurityContext bool
-		want               corev1.Container
-		featureFlags       map[string]string
+		name                                     string
+		steps                                    []v1.Step
+		windows                                  bool
+		setSecurityContext                       bool
+		setSecurityContextReadOnlyRootFilesystem bool
+		want                                     corev1.Container
+		featureFlags                             map[string]string
 	}{{
 		name: "nothing-special",
 		steps: []v1.Step{{
@@ -3413,14 +3414,15 @@ func TestPrepareInitContainers(t *testing.T) {
 		}, {
 			Name: "bar",
 		}},
-		setSecurityContext: true,
+		setSecurityContext:                       true,
+		setSecurityContextReadOnlyRootFilesystem: true,
 		want: corev1.Container{
 			Name:            "prepare",
 			Image:           images.EntrypointImage,
 			WorkingDir:      "/",
 			Command:         []string{"/ko-app/entrypoint", "init", "/ko-app/entrypoint", entrypointBinary, "step-foo", "step-bar"},
 			VolumeMounts:    []corev1.VolumeMount{binMount, internalStepsMount},
-			SecurityContext: linuxSecurityContext,
+			SecurityContext: getLinuxSecurityContextWithReadOnlyRootFilesystem(),
 		},
 	}, {
 		name: "nothing-special-two-steps-windows",
@@ -3444,8 +3446,9 @@ func TestPrepareInitContainers(t *testing.T) {
 		}, {
 			Name: "bar",
 		}},
-		setSecurityContext: true,
-		windows:            true,
+		setSecurityContext:                       true,
+		setSecurityContextReadOnlyRootFilesystem: true,
+		windows:                                  true,
 		want: corev1.Container{
 			Name:            "prepare",
 			Image:           images.EntrypointImage,
@@ -3457,7 +3460,7 @@ func TestPrepareInitContainers(t *testing.T) {
 	}}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			container := entrypointInitContainer(images.EntrypointImage, tc.steps, tc.setSecurityContext, tc.windows)
+			container := entrypointInitContainer(images.EntrypointImage, tc.steps, tc.setSecurityContext, tc.setSecurityContextReadOnlyRootFilesystem, tc.windows)
 			if d := cmp.Diff(tc.want, container); d != "" {
 				t.Errorf("Diff %s", diff.PrintWantGot(d))
 			}
@@ -4022,6 +4025,7 @@ func TestPodBuildWithK8s129(t *testing.T) {
 				images.EntrypointImage,
 				[]v1.Step{{Name: "name"}},
 				false, /* setSecurityContext */
+				false, /* setSecurityContextReadOnlyRootFilesystem */
 				false /* windows */),
 			{
 				Name:    "sidecar-name",

@@ -129,6 +129,8 @@ func (c *Reconciler) createOrUpdateAffinityAssistantsAndPVCs(ctx context.Context
 func (c *Reconciler) createOrUpdateAffinityAssistant(ctx context.Context, affinityAssistantName string, pr *v1.PipelineRun, claimTemplates []corev1.PersistentVolumeClaim, claimNames []string, unschedulableNodes sets.Set[string]) []error {
 	logger := logging.FromContext(ctx)
 	cfg := config.FromContextOrDefaults(ctx)
+	setSecurityContext := cfg.FeatureFlags.SetSecurityContext
+	println(setSecurityContext)
 
 	var errs []error
 	a, err := c.KubeClientSet.AppsV1().StatefulSets(pr.Namespace).Get(ctx, affinityAssistantName, metav1.GetOptions{})
@@ -369,6 +371,12 @@ func affinityAssistantStatefulSet(aaBehavior aa.AffinityAssistantBehavior, name 
 			},
 		},
 	}
+}
+
+type ContainerConfig struct {
+	Image                     string
+	SetSecurityContext        bool
+	SetReadOnlyRootFilesystem bool
 }
 
 // getAssistantAffinityMergedWithPodTemplateAffinity return the affinity that merged with PipelineRun PodTemplate affinity.

@@ -131,6 +131,7 @@ var (
 	// Used in security context of pod init containers
 	allowPrivilegeEscalation = false
 	runAsNonRoot             = true
+	readOnlyRootFilesystem   = true
 
 	// The following security contexts allow init containers to run in namespaces
 	// with "restricted" pod security admission
@@ -178,6 +179,7 @@ func (b *Builder) Build(ctx context.Context, taskRun *v1.TaskRun, taskSpec v1.Ta
 	sidecarLogsResultsEnabled := config.FromContextOrDefaults(ctx).FeatureFlags.ResultExtractionMethod == config.ResultExtractionMethodSidecarLogs
 	enableKeepPodOnCancel := featureFlags.EnableKeepPodOnCancel
 	setSecurityContext := config.FromContextOrDefaults(ctx).FeatureFlags.SetSecurityContext
+	setSecurityContextReadOnlyRootFilesystem := config.FromContextOrDefaults(ctx).FeatureFlags.SetSecurityContextReadOnlyRootFilesystem
 
 	// Add our implicit volumes first, so they can be overridden by the user if they prefer.
 	volumes = append(volumes, implicitVolumes...)
@@ -216,7 +218,7 @@ func (b *Builder) Build(ctx context.Context, taskRun *v1.TaskRun, taskSpec v1.Ta
 	if sidecarLogsResultsEnabled {
 		if taskSpec.Results != nil || artifactsPathReferenced(steps) {
 			// create a results sidecar
-			resultsSidecar, err := createResultsSidecar(taskSpec, b.Images.SidecarLogResultsImage, setSecurityContext, windows)
+			resultsSidecar, err := createResultsSidecar(taskSpec, b.Images.SidecarLogResultsImage, setSecurityContext, setSecurityContextReadOnlyRootFilesystem, windows)
 			if err != nil {
 				return nil, err
 			}
@@ -231,15 +233,15 @@ func (b *Builder) Build(ctx context.Context, taskRun *v1.TaskRun, taskSpec v1.Ta
 	}
 
 	initContainers = []corev1.Container{
-		entrypointInitContainer(b.Images.EntrypointImage, steps, setSecurityContext, windows),
+		entrypointInitContainer(b.Images.EntrypointImage, steps, setSecurityContext, setSecurityContextReadOnlyRootFilesystem, windows),
 	}
 
 	// Convert any steps with Script to command+args.
 	// If any are found, append an init container to initialize scripts.
 	if alphaAPIEnabled {
-		scriptsInit, stepContainers, sidecarContainers = convertScripts(b.Images.ShellImage, b.Images.ShellImageWin, steps, sidecars, taskRun.Spec.Debug, setSecurityContext)
+		scriptsInit, stepContainers, sidecarContainers = convertScripts(b.Images.ShellImage, b.Images.ShellImageWin, steps, sidecars, taskRun.Spec.Debug, setSecurityContext, setSecurityContextReadOnlyRootFilesystem)
 	} else {
-		scriptsInit, stepContainers, sidecarContainers = convertScripts(b.Images.ShellImage, "", steps, sidecars, nil, setSecurityContext)
+		scriptsInit, stepContainers, sidecarContainers = convertScripts(b.Images.ShellImage, "", steps, sidecars, nil, setSecurityContext, setSecurityContextReadOnlyRootFilesystem)
 	}
 
 	if scriptsInit != nil {
@@ -250,7 +252,7 @@ func (b *Builder) Build(ctx context.Context, taskRun *v1.TaskRun, taskSpec v1.Ta
 		volumes = append(volumes, debugScriptsVolume, debugInfoVolume)
 	}
 	// Initialize any workingDirs under /workspace.
-	if workingDirInit := workingDirInit(b.Images.WorkingDirInitImage, stepContainers, setSecurityContext, windows); workingDirInit != nil {
+	if workingDirInit := workingDirInit(b.Images.WorkingDirInitImage, stepContainers, setSecurityContext, setSecurityContextReadOnlyRootFilesystem, windows); workingDirInit != nil {
 		initContainers = append(initContainers, *workingDirInit)
 	}
 
@@ -695,7 +697,7 @@ func runVolume(i int) corev1.Volume {
 // This should effectively merge multiple command and volumes together.
 // If setSecurityContext is true, the init container will include a security context
 // allowing it to run in namespaces with restriced pod security admission.
-func entrypointInitContainer(image string, steps []v1.Step, setSecurityContext, windows bool) corev1.Container {
+func entrypointInitContainer(image string, steps []v1.Step, setSecurityContext, setSecurityContextReadOnlyRootFilesystem, windows bool) corev1.Container {
 	// Invoke the entrypoint binary in "cp mode" to copy itself
 	// into the correct location for later steps and initialize steps folder
 	command := []string{"/ko-app/entrypoint", "init", "/ko-app/entrypoint", entrypointBinary}
@@ -706,6 +708,10 @@ func entrypointInitContainer(image string, steps []v1.Step, setSecurityContext, 
 	securityContext := linuxSecurityContext
 	if windows {
 		securityContext = windowsSecurityContext
+	} else {
+		if readOnlyRootFilesystem {
+			securityContext.ReadOnlyRootFilesystem = &readOnlyRootFilesystem
+		}
 	}
 
 	// Rewrite steps with entrypoint binary. Append the entrypoint init
@@ -732,7 +738,7 @@ func entrypointInitContainer(image string, steps []v1.Step, setSecurityContext, 
 // whether it will run on a windows node, and whether the sidecar should include a security context
 // that will allow it to run in namespaces with "restricted" pod security admission.
 // It will also provide arguments to the binary that allow it to surface the step results.
-func createResultsSidecar(taskSpec v1.TaskSpec, image string, setSecurityContext, windows bool) (v1.Sidecar, error) {
+func createResultsSidecar(taskSpec v1.TaskSpec, image string, setSecurityContext, setSecurityContextReadOnlyRootFilesystem, windows bool) (v1.Sidecar, error) {
 	names := make([]string, 0, len(taskSpec.Results))
 	for _, r := range taskSpec.Results {
 		names = append(names, r.Name)
@@ -778,7 +784,12 @@ func createResultsSidecar(taskSpec v1.TaskSpec, image string, setSecurityContext
 	securityContext := linuxSecurityContext
 	if windows {
 		securityContext = windowsSecurityContext
+	} else {
+		if readOnlyRootFilesystem {
+			securityContext.ReadOnlyRootFilesystem = &readOnlyRootFilesystem
+		}
 	}
+
 	if setSecurityContext {
 		sidecar.SecurityContext = securityContext
 	}
@@ -830,4 +841,10 @@ func artifactPathReferencedInStep(step v1.Step) bool {
 		}
 	}
 	return false
+}
+
+func getLinuxSecurityContextWithReadOnlyRootFilesystem() *corev1.SecurityContext {
+	securityContext := linuxSecurityContext
+	securityContext.ReadOnlyRootFilesystem = &readOnlyRootFilesystem
+	return securityContext
 }
